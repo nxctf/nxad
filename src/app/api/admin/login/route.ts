@@ -66,6 +66,7 @@ export async function POST(request: Request) {
         maxAge: 60 * 60 * 24, // 1 day
         path: "/",
       })
+      cookies().delete("team")
 
       console.log(`Successful admin login: ${admin.username}`)
       return NextResponse.json({ success: true, admin: admin.username })

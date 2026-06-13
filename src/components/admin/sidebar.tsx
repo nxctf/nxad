@@ -14,7 +14,7 @@ export function AdminSidebar() {
   const handleLogout = async () => {
     try {
       await fetch("/api/admin/logout", { method: "POST" })
-      router.push("/admin/login")
+      window.location.href = "/admin/login"
     } catch (error) {
       console.error("Logout failed", error)
     }
@@ -96,7 +96,7 @@ export function AdminSidebar() {
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:top-16 md:bottom-0">
         <nav className="bg-gray-800 border-r border-gray-700 flex-1 flex flex-col">
           <div className="p-4 border-b border-gray-700">
             <h2 className="text-xl font-bold text-purple-400">Admin Panel</h2>

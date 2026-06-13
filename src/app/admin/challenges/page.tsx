@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { AdminSidebar } from "@/components/admin/sidebar"
 import { RefreshCw, Check, X } from "lucide-react"
 
 type Challenge = {
@@ -48,19 +47,14 @@ export default function AdminChallengesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex">
-        <AdminSidebar />
-        <div className="flex-1 md:ml-64 p-8">
-          <p className="text-gray-400">Loading...</p>
-        </div>
+      <div className="flex-1 p-8">
+        <p className="text-gray-400">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      <AdminSidebar />
-      <div className="flex-1 md:ml-64">
+    <div className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -116,7 +110,6 @@ export default function AdminChallengesPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
     </div>
   )
 }

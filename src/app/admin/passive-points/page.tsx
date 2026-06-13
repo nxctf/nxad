@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AdminSidebar } from "@/components/admin/sidebar"
 import { AlertDialog } from "@/components/alert-dialog"
 import { Clock, Play, Square, RefreshCw, AlertTriangle, CheckCircle, Calendar, Settings } from "lucide-react"
 
@@ -328,12 +327,8 @@ export default function AdminPassivePointsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col flex-1">
       {alert.show && <AlertDialog type={alert.type} title={alert.title} message={alert.message} onClose={closeAlert} />}
-
-      <AdminSidebar />
-
-      <div className="md:pl-64 flex flex-col flex-1">
         <main className="flex-1 p-6">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-purple-400">Passive Points Control</h1>
@@ -555,21 +550,14 @@ export default function AdminPassivePointsPage() {
             </CardHeader>
             <CardContent>
               <ul className="text-sm space-y-1 text-gray-300">
-                <li>• Awards 1 point every 20 minutes to teams for each unsubmitted flag they own</li>
-                <li>• Only counts flags that no other team has submitted</li>
+                <li>• Awards points every 5 minutes to teams for each flag they own</li>
+                <li>• Calculated as: (total teams - 1) - teams that submitted your flag</li>
                 <li>• Respects the configured start and end times</li>
                 <li>• Encourages teams to protect their flags throughout the competition</li>
               </ul>
             </CardContent>
           </Card>
         </main>
-
-        <footer className="bg-gray-800 py-4 border-t border-gray-700">
-          <div className="container mx-auto px-4 text-center text-gray-400">
-            &copy; {new Date().getFullYear()} NXAD - Admin Panel
-          </div>
-        </footer>
       </div>
-    </div>
   )
 }

@@ -1,6 +1,7 @@
 import connectToDatabase from "./mongodb"
 import Team from "@/models/Team"
 import Flag from "@/models/Flag"
+import SystemLog from "@/models/SystemLog"
 import { getCurrentConfig } from "./config"
 
 // Store the interval ID so we can clear it later
@@ -71,6 +72,7 @@ export async function awardPassivePoints() {
 
     // Track points awarded in this run
     let pointsAwarded = 0
+    const awardDetails: Array<{ team: string; points: number }> = []
 
     // Process each flag
     for (const flag of flags) {
@@ -88,12 +90,34 @@ export async function awardPassivePoints() {
           ownerTeam.score += points
           await ownerTeam.save()
           pointsAwarded += points
+          awardDetails.push({ team: flag.owner, points })
 
           console.log(
             `Awarded ${points} passive point(s) to ${flag.owner} for flag (${otherSubmissions.length}/${otherTeamCount} other teams submitted)`,
           )
         }
       }
+    }
+
+    // Log the passive points calculation event
+    if (pointsAwarded > 0) {
+      const detailsText = awardDetails
+        .map((a) => `**${a.team}** (+${a.points} pts)`)
+        .join(", ")
+
+      await SystemLog.create({
+        type: "passive-points",
+        points: pointsAwarded,
+        message: `Calculated passive points. Awarded to: ${detailsText}.`,
+        details: awardDetails,
+      })
+    } else {
+      await SystemLog.create({
+        type: "passive-points",
+        points: 0,
+        message: `Calculated passive points. No points awarded (all services breached or no teams registered).`,
+        details: [],
+      })
     }
 
     // Update status

@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import connectToDatabase from "@/lib/mongodb"
 import Team from "@/models/Team"
 import Flag from "@/models/Flag"
+import SystemLog from "@/models/SystemLog"
 import { sendNotificationToTeam } from "../notifications/route"
 import { checkRateLimit, formatTimeRemaining } from "@/lib/rate-limiter"
 import { getCurrentConfig } from "@/lib/config"
@@ -85,12 +86,29 @@ export async function POST(request: Request) {
       // Team submitted their own flag
       submittingTeam.score += config.SELF_FLAG_POINTS
       message = `You submitted your own flag! +${config.SELF_FLAG_POINTS} points`
+
+      // Log the self-submit event
+      await SystemLog.create({
+        type: "self-submit",
+        team: teamName,
+        points: config.SELF_FLAG_POINTS,
+        message: `Team **${teamName}** successfully validated their own service flag (+$${config.SELF_FLAG_POINTS} pts).`,
+      })
     } else {
       // Team submitted another team's flag
       submittingTeam.score += config.ATTACK_POINTS
       ownerTeam.score -= config.DEFENSE_PENALTY
       await ownerTeam.save()
       message = `You submitted ${flagDoc.owner}'s flag! +${config.ATTACK_POINTS} points for you, -${config.DEFENSE_PENALTY} points for them`
+
+      // Log the attack event
+      await SystemLog.create({
+        type: "attack",
+        team: teamName,
+        target: flagDoc.owner,
+        points: config.ATTACK_POINTS,
+        message: `Team **${teamName}** successfully breached Team **${flagDoc.owner}** and captured their flag! (+${config.ATTACK_POINTS} pts for attacker, -${config.DEFENSE_PENALTY} pts for defender).`,
+      })
 
       // Send notification to the flag owner
       sendNotificationToTeam(flagDoc.owner, {

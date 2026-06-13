@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AdminSidebar } from "@/components/admin/sidebar"
 import { Users, Flag, MessageSquare, Trophy, Clock, Sliders } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -95,10 +94,7 @@ export default function AdminDashboard() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <AdminSidebar />
-
-      <div className="md:pl-64 flex flex-col flex-1">
+    <div className="flex flex-col flex-1">
         <main className="flex-1 p-6">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-purple-400">Admin Dashboard</h1>
@@ -241,12 +237,6 @@ export default function AdminDashboard() {
           </div>
         </main>
 
-        <footer className="bg-gray-800 py-4 border-t border-gray-700">
-          <div className="container mx-auto px-4 text-center text-gray-400">
-            &copy; {new Date().getFullYear()} NXAD - Admin Panel
-          </div>
-        </footer>
-      </div>
     </div>
   )
 }

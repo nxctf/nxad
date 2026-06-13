@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AdminSidebar } from "@/components/admin/sidebar"
 import { AlertDialog } from "@/components/alert-dialog"
 import { Rocket, Square, RefreshCw, Loader2, Server, CheckCircle, XCircle, Clock } from "lucide-react"
 
@@ -115,9 +114,7 @@ export default function AdminDeployPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      <AdminSidebar />
-      <div className="flex-1 md:ml-64">
+    <div className="flex-1">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -206,7 +203,6 @@ export default function AdminDeployPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
 
       {alert.show && <AlertDialog
         onClose={() => setAlert({ ...alert, show: false })}

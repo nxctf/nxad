@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { AdminSidebar } from "@/components/admin/sidebar"
 import { AlertDialog } from "@/components/alert-dialog"
 import { RefreshCw, AlertTriangle, Play, Users, Flag } from "lucide-react"
 
@@ -126,12 +125,8 @@ export default function AdminInitializePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col flex-1">
       {alert.show && <AlertDialog type={alert.type} title={alert.title} message={alert.message} onClose={closeAlert} />}
-
-      <AdminSidebar />
-
-      <div className="md:pl-64 flex flex-col flex-1">
         <main className="flex-1 p-6">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-purple-400">Initialize Competition</h1>
@@ -254,13 +249,6 @@ export default function AdminInitializePage() {
             </CardContent>
           </Card>
         </main>
-
-        <footer className="bg-gray-800 py-4 border-t border-gray-700">
-          <div className="container mx-auto px-4 text-center text-gray-400">
-            &copy; {new Date().getFullYear()} NXAD - Admin Panel
-          </div>
-        </footer>
-      </div>
     </div>
   )
 }
