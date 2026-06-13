@@ -1,0 +1,16 @@
+  nxad-challenge-{{TEAM_NAME_SLUG}}-{{CHALLENGE_NAME}}:
+    build:
+      context: {{CONTEXT}}
+      dockerfile: {{DOCKERFILE}}
+    container_name: nxad-challenge-{{TEAM_NAME_SLUG}}-{{CHALLENGE_NAME}}
+    environment:
+      TEAM_NAME: "{{TEAM_NAME}}"
+      SERVICE_NAME: "{{CHALLENGE_NAME}}"
+      FLAG: "{{FLAG}}"
+      SSH_USER: team
+      SSH_PASSWORD: "{{SSH_PASSWORD}}"
+    ports:
+      - "{{SSH_PORT}}:{{INTERNAL_SSH_PORT}}"
+      - "{{HTTP_PORT}}:{{INTERNAL_HTTP_PORT}}"
+    networks:
+      - nxad-challenges

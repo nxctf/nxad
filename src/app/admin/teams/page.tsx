@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AdminSidebar } from "@/components/admin/sidebar"
 import { AlertDialog } from "@/components/alert-dialog"
-import { Users, Plus, Trash2, Edit, RefreshCw, Search, Flag, Trophy } from "lucide-react"
+import { Users, Plus, Trash2, Edit, RefreshCw, Search, Trophy } from "lucide-react"
 
 type Team = {
   _id: string
@@ -31,8 +31,6 @@ export default function AdminTeamsPage() {
     name: "",
     username: "",
     password: "",
-    score: 0,
-    flagsCount: 5,
   })
   const [alert, setAlert] = useState<{
     show: boolean
@@ -93,7 +91,7 @@ export default function AdminTeamsPage() {
     const { name, value } = e.target
     setFormData({
       ...formData,
-      [name]: name === "score" || name === "flagsCount" ? Number.parseInt(value) || 0 : value,
+      [name]: value,
     })
   }
 
@@ -126,8 +124,6 @@ export default function AdminTeamsPage() {
           name: "",
           username: "",
           password: "",
-          score: 0,
-          flagsCount: 5,
         })
         setShowAddForm(false)
         fetchTeams()
@@ -160,12 +156,11 @@ export default function AdminTeamsPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: formData.name,
-          username: formData.username,
-          password: formData.password,
-          score: formData.score,
-        }),
+          body: JSON.stringify({
+            name: formData.name,
+            username: formData.username,
+            password: formData.password,
+          }),
       })
 
       const data = await response.json()
@@ -182,8 +177,6 @@ export default function AdminTeamsPage() {
           name: "",
           username: "",
           password: "",
-          score: 0,
-          flagsCount: 5,
         })
         fetchTeams()
       } else {
@@ -249,9 +242,7 @@ export default function AdminTeamsPage() {
     setFormData({
       name: team.name,
       username: team.username,
-      password: "", // Don't populate password for security
-      score: team.score,
-      flagsCount: team.flags.length,
+      password: "",
     })
     setShowAddForm(false)
   }
@@ -263,8 +254,6 @@ export default function AdminTeamsPage() {
       name: "",
       username: "",
       password: "",
-      score: 0,
-      flagsCount: 5,
     })
   }
 
@@ -300,8 +289,6 @@ export default function AdminTeamsPage() {
                     name: "",
                     username: "",
                     password: "",
-                    score: 0,
-                    flagsCount: 5,
                   })
                 }}
                 className={showAddForm ? "bg-gray-700" : "bg-purple-600 hover:bg-purple-700"}
@@ -379,37 +366,6 @@ export default function AdminTeamsPage() {
                         className="bg-gray-700 border-gray-600 text-white"
                       />
                     </div>
-                    {editingTeam ? (
-                      <div className="space-y-2">
-                        <Label htmlFor="score" className="text-gray-300">
-                          Score
-                        </Label>
-                        <Input
-                          id="score"
-                          name="score"
-                          type="number"
-                          value={formData.score}
-                          onChange={handleInputChange}
-                          className="bg-gray-700 border-gray-600 text-white"
-                        />
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Label htmlFor="flagsCount" className="text-gray-300">
-                          Number of Flags
-                        </Label>
-                        <Input
-                          id="flagsCount"
-                          name="flagsCount"
-                          type="number"
-                          min="1"
-                          max="20"
-                          value={formData.flagsCount}
-                          onChange={handleInputChange}
-                          className="bg-gray-700 border-gray-600 text-white"
-                        />
-                      </div>
-                    )}
                   </div>
                   <div className="flex justify-end gap-2">
                     <Button
@@ -456,9 +412,6 @@ export default function AdminTeamsPage() {
                     <th className="px-4 py-3 text-gray-300 font-semibold text-center">
                       <Trophy className="h-4 w-4 inline mr-1" /> Score
                     </th>
-                    <th className="px-4 py-3 text-gray-300 font-semibold text-center">
-                      <Flag className="h-4 w-4 inline mr-1" /> Flags
-                    </th>
                     <th className="px-4 py-3 text-gray-300 font-semibold text-right">Actions</th>
                   </tr>
                 </thead>
@@ -470,7 +423,6 @@ export default function AdminTeamsPage() {
                       <td className="px-4 py-3 text-center font-bold">
                         <span className={team.score >= 0 ? "text-green-400" : "text-red-400"}>{team.score}</span>
                       </td>
-                      <td className="px-4 py-3 text-center text-gray-300">{team.flags.length}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2">
                           <Button

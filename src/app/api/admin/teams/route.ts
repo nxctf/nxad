@@ -2,36 +2,16 @@ import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import connectToDatabase from "@/lib/mongodb"
 import Team from "@/models/Team"
-import Flag from "@/models/Flag"
-// Import the UUID generator
-import { generateUUID } from "@/lib/uuid-generator"
 
-// Helper function to generate random flags (hashes)
-function generateFlags(count: number): string[] {
-  const flags: string[] = []
-  for (let i = 0; i < count; i++) {
-    // Generate UUID v4 format flags
-    const uuid = generateUUID()
-    flags.push(uuid)
-  }
-  return flags
-}
-
-// Get all teams
+// Create a new team
 export async function GET() {
   try {
-    // Check if admin is authenticated
     const adminCookie = cookies().get("admin")
     if (!adminCookie) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 })
     }
-
-    // Connect to database
     await connectToDatabase()
-
-    // Get all teams
     const teams = await Team.find({}).sort({ name: 1 })
-
     return NextResponse.json({ success: true, teams })
   } catch (error) {
     console.error("Get teams error:", error)
@@ -39,7 +19,6 @@ export async function GET() {
   }
 }
 
-// Create a new team
 export async function POST(request: Request) {
   try {
     // Check if admin is authenticated
@@ -48,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Not authenticated" }, { status: 401 })
     }
 
-    const { name, username, password, flagsCount = 5 } = await request.json()
+    const { name, username, password } = await request.json()
 
     // Validate input
     if (!name || !username || !password) {
@@ -70,26 +49,14 @@ export async function POST(request: Request) {
       )
     }
 
-    // Generate flags
-    const flags = generateFlags(flagsCount)
-
-    // Create team
+    // Create team (flags are auto-generated during challenge deployment)
     const team = await Team.create({
       name,
       username,
       password,
       score: 0,
-      flags,
+      flags: [],
     })
-
-    // Create flag documents
-    const flagDocs = flags.map((flag) => ({
-      value: flag,
-      owner: team.name,
-      submissions: [], // Initialize with empty submissions array
-    }))
-
-    await Flag.insertMany(flagDocs)
 
     return NextResponse.json({
       success: true,

@@ -8,7 +8,7 @@ id "$SSH_USER" 2>/dev/null || useradd -m -s /bin/sh "$SSH_USER"
 echo "$SSH_USER:$SSH_PASSWORD" | chpasswd
 
 printf '%s' "$FLAG" > /flag.txt
-chmod 444 /flag.txt
+chmod 400 /flag.txt
 
 mkdir -p /app/notes
 [ -f /app/notes/welcome.txt ] || printf 'Welcome to NXAD sample service.\n' > /app/notes/welcome.txt

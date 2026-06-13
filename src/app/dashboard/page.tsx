@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Shield, Flag, AlertTriangle, Trophy } from "lucide-react"
+import { Shield, Flag, AlertTriangle, Trophy, Server, Crosshair, Terminal, Globe, Key } from "lucide-react"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { FlagNotificationSystem } from "@/components/flag-notification"
 import { AlertDialog } from "@/components/alert-dialog"
@@ -60,6 +60,8 @@ export default function DashboardPage() {
     message: "",
   })
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null)
+  const [myServices, setMyServices] = useState<any[]>([])
+  const [targets, setTargets] = useState<any[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -83,6 +85,24 @@ export default function DashboardPage() {
 
     checkAuth()
   }, [router])
+
+  useEffect(() => {
+    const fetchDeployments = async () => {
+      try {
+        const res = await fetch("/api/deployments")
+        if (res.ok) {
+          const data = await res.json()
+          setMyServices(data.myServices || [])
+          setTargets(data.targets || [])
+        }
+      } catch (err) {
+        console.error("Failed to fetch deployments", err)
+      }
+    }
+    fetchDeployments()
+    const interval = setInterval(fetchDeployments, 15000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -242,6 +262,81 @@ export default function DashboardPage() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 py-8">
+        {/* My Services */}
+        {myServices.length > 0 && (
+          <Card className="bg-gray-800 border-gray-700 mb-6">
+            <CardHeader>
+              <CardTitle className="text-xl text-green-400 flex items-center">
+                <Server className="mr-2 h-5 w-5" /> My Services
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Your challenge containers — defend these services
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {myServices.map((svc: any, i: number) => (
+                  <div key={i} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                    <h3 className="font-bold text-white mb-2">{svc.challengeName}</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <Globe className="h-4 w-4 text-blue-400" />
+                        <a href={svc.httpUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                          {svc.httpUrl}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <Terminal className="h-4 w-4 text-green-400" />
+                        <code className="text-xs text-gray-300 break-all">{svc.sshCommand}</code>
+                      </div>
+                      {svc.sshPassword && (
+                        <div className="flex items-center gap-2 text-gray-300">
+                          <Key className="h-4 w-4 text-yellow-400" />
+                          <span>Password: <code className="text-yellow-300">{svc.sshPassword}</code></span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Targets */}
+        {targets.length > 0 && (
+          <Card className="bg-gray-800 border-gray-700 mb-6">
+            <CardHeader>
+              <CardTitle className="text-xl text-red-400 flex items-center">
+                <Crosshair className="mr-2 h-5 w-5" /> Targets
+              </CardTitle>
+              <CardDescription className="text-gray-400">
+                Attack these teams to capture their flags
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {targets.map((t: any, i: number) => (
+                  <div key={i} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                    <h3 className="font-bold text-red-400 mb-2">{t.teamName}</h3>
+                    {t.services.map((svc: any, j: number) => (
+                      <div key={j} className="mt-2 text-sm">
+                        <div className="text-gray-400 text-xs">{svc.challengeName}</div>
+                        <a href={svc.httpUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-xs">
+                          {svc.httpUrl}
+                        </a>
+                        <div className="text-gray-500 text-xs font-mono">
+                          {svc.sshCommand.split("@")[1] ? `SSH: team@${svc.sshCommand.split("@")[1]}` : ""}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <Card className="bg-gray-800 border-gray-700">

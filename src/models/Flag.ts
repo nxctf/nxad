@@ -12,6 +12,10 @@ const FlagSchema = new Schema(
       required: true,
       ref: "Team",
     },
+    challenge: {
+      type: String,
+      ref: "Challenge",
+    },
     // Instead of a simple boolean, track which teams have submitted this flag
     submissions: [
       {

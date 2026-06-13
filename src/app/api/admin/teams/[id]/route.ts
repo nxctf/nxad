@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
 import { cookies } from "next/headers"
+import { execSync } from "child_process"
 import connectToDatabase from "@/lib/mongodb"
 import Team from "@/models/Team"
 import Flag from "@/models/Flag"
+import Deployment from "@/models/Deployment"
 
 // Get a specific team
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -117,6 +119,19 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ message: "Team not found", success: false }, { status: 404 })
     }
 
+    // Remove challenge containers and deployments
+    const deployments = await Deployment.find({ teamName: team.name })
+    for (const dep of deployments) {
+      if (dep.containerId) {
+        try {
+          execSync(`docker rm -f ${dep.containerId} 2>/dev/null`, { timeout: 10000 })
+        } catch {
+          // container might already be gone
+        }
+      }
+    }
+    await Deployment.deleteMany({ teamName: team.name })
+
     // Delete the team's flags
     await Flag.deleteMany({ owner: team.name })
 
@@ -125,7 +140,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     return NextResponse.json({
       success: true,
-      message: "Team and associated flags deleted successfully",
+      message: "Team, containers, and associated flags deleted successfully",
     })
   } catch (error) {
     console.error("Delete team error:", error)

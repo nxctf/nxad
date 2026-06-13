@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Users, Flag, Clock, MessageSquare, Settings, LogOut, Home, Menu, X, Trophy, Sliders } from "lucide-react"
+import { Users, Flag, Clock, MessageSquare, Settings, LogOut, Home, Menu, X, Trophy, Sliders, Layers, Rocket } from "lucide-react"
 
 export function AdminSidebar() {
   const pathname = usePathname()
@@ -30,6 +30,8 @@ export function AdminSidebar() {
     { href: "/admin/teams", label: "Teams", icon: Users },
     { href: "/admin/flags", label: "Flags", icon: Flag },
     { href: "/admin/scoreboard", label: "Scoreboard", icon: Trophy },
+    { href: "/admin/challenges", label: "Challenges", icon: Layers },
+    { href: "/admin/deploy", label: "Deploy", icon: Rocket },
     { href: "/admin/passive-points", label: "Passive Points", icon: Clock },
     { href: "/admin/config", label: "Configuration", icon: Sliders },
     { href: "/admin/chat", label: "Chat Logs", icon: MessageSquare },

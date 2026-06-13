@@ -40,6 +40,10 @@ services:
       - PASSIVE_POINTS_INTERVAL=1200000
       - MAX_SUBMISSIONS_PER_MINUTE=10
       - RATE_LIMIT_WINDOW=60000
+      # Challenge deployment
+      - CHALLENGE_PORT_BASE=${CHALLENGE_PORT_BASE:-10000}
+      - CHALLENGE_PORTS_PER_TEAM=${CHALLENGE_PORTS_PER_TEAM:-200}
+      - HOST_IP=${HOST_IP:-}
       # Public environment variables (accessible in browser)
       - NEXT_PUBLIC_SELF_FLAG_POINTS=10
       - NEXT_PUBLIC_ATTACK_POINTS=200
@@ -54,6 +58,9 @@ services:
       - nxad-network
     volumes:
       - ./public/sounds:/app/public/sounds:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - ./challenges:/challenges:rw
+      - ./scripts:/scripts:ro
 
   # MongoDB Express (Optional - for database management)
   mongo-express:

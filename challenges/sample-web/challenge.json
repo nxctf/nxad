@@ -1,0 +1,9 @@
+{
+  "name": "sample-web",
+  "title": "Sample Web Challenge",
+  "description": "A vulnerable Flask web app with path traversal vulnerability. Patch the vulnerability and defend your flag.",
+  "directory": "sample-web",
+  "dockerfile": "Dockerfile",
+  "internalHttpPort": 8000,
+  "internalSshPort": 22
+}

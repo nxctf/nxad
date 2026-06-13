@@ -21,7 +21,6 @@ export default function AdminInitializePage() {
   { "name": "Team3", "username": "team3", "password": "password3" },
   { "name": "Team4", "username": "team4", "password": "password4" }
 ]`)
-  const [flagsPerTeam, setFlagsPerTeam] = useState(5)
   const [alert, setAlert] = useState<{
     show: boolean
     type: "error" | "success" | "warning" | "info"
@@ -87,7 +86,6 @@ export default function AdminInitializePage() {
         },
         body: JSON.stringify({
           teams,
-          flagsPerTeam,
         }),
       })
 
@@ -186,22 +184,6 @@ export default function AdminInitializePage() {
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="flagsPerTeam" className="text-gray-300">
-                      Flags Per Team
-                    </Label>
-                    <Input
-                      id="flagsPerTeam"
-                      type="number"
-                      min="1"
-                      max="20"
-                      value={flagsPerTeam}
-                      onChange={(e) => setFlagsPerTeam(Number.parseInt(e.target.value) || 5)}
-                      className="bg-gray-700 border-gray-600 text-white"
-                    />
-                    <p className="text-xs text-gray-400">Number of flags to generate for each team.</p>
-                  </div>
-
                   <Button
                     onClick={handleInitialize}
                     className="w-full bg-purple-600 hover:bg-purple-700"
@@ -231,7 +213,7 @@ export default function AdminInitializePage() {
                       </div>
                       <div className="flex items-center">
                         <Flag className="h-5 w-5 text-green-400 mr-2" />
-                        <span className="text-gray-300">Flags per team: {flagsPerTeam}</span>
+                        <span className="text-gray-300">Flags auto-generated during deployment</span>
                       </div>
                     </div>
                   </div>
