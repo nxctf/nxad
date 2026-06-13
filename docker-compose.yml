@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: nxad-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-change-me}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-nxad}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-nxad}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD must be set}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/setup-database.js:/docker-entrypoint-initdb.d/setup-database.js:ro
+    networks:
+      - nxad-network
+
+  # Next.js Application
+  nxad-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nxad-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI:-mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-change-me}@mongodb:27017/${MONGODB_DATABASE:-nxad}?authSource=admin}
+      - NEXT_TELEMETRY_DISABLED=1
+      # Competition Configuration
+      - SELF_FLAG_POINTS=10
+      - ATTACK_POINTS=200
+      - DEFENSE_PENALTY=50
+      - PASSIVE_POINTS_VALUE=1
+      - PASSIVE_POINTS_INTERVAL=1200000
+      - MAX_SUBMISSIONS_PER_MINUTE=10
+      - RATE_LIMIT_WINDOW=60000
+      # Public environment variables (accessible in browser)
+      - NEXT_PUBLIC_SELF_FLAG_POINTS=10
+      - NEXT_PUBLIC_ATTACK_POINTS=200
+      - NEXT_PUBLIC_DEFENSE_PENALTY=50
+      - NEXT_PUBLIC_PASSIVE_POINTS_VALUE=1
+      - NEXT_PUBLIC_PASSIVE_POINTS_INTERVAL=1200000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - nxad-network
+    volumes:
+      - ./public/sounds:/app/public/sounds:ro
+
+  # MongoDB Express (Optional - for database management)
+  mongo-express:
+    image: mongo-express:1.0.0
+    container_name: nxad-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-change-me}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-change-me}@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD:-change-me}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - nxad-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  nxad-network:
+    driver: bridge
