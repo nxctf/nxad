@@ -3,6 +3,10 @@ import { cookies } from "next/headers"
 import connectToDatabase from "@/lib/mongodb"
 import Team from "@/models/Team"
 
+function shouldUseSecureCookie() {
+  return process.env.COOKIE_SECURE === "true"
+}
+
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json()
@@ -39,7 +43,7 @@ export async function POST(request: Request) {
     // Set session cookie
     cookies().set("team", team.name, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: shouldUseSecureCookie(),
       maxAge: 60 * 60 * 24, // 1 day
       path: "/",
     })

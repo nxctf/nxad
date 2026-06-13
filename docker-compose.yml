@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MongoDB Database
   mongodb:
@@ -32,7 +30,7 @@ services:
       - .env
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=${MONGODB_URI:-mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-change-me}@mongodb:27017/${MONGODB_DATABASE:-nxad}?authSource=admin}
+      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-change-me}@mongodb:27017/${MONGODB_DATABASE:-nxad}?authSource=admin
       - NEXT_TELEMETRY_DISABLED=1
       # Competition Configuration
       - SELF_FLAG_POINTS=10
