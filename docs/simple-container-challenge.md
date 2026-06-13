@@ -11,21 +11,18 @@ This setup deploys one vulnerable web container per team. Each container receive
 Example for 4 teams:
 
 ```txt
-team01 -> nxad-challenge-team01 -> http://localhost:9000 -> team01 flag
-team02 -> nxad-challenge-team02 -> http://localhost:9001 -> team02 flag
-team03 -> nxad-challenge-team03 -> http://localhost:9002 -> team03 flag
-team04 -> nxad-challenge-team04 -> http://localhost:9003 -> team04 flag
+team01 -> nxad-challenge-team01 -> http://localhost:10001 -> team01 flag
+team02 -> nxad-challenge-team02 -> http://localhost:10201 -> team02 flag
+team03 -> nxad-challenge-team03 -> http://localhost:10401 -> team03 flag
+team04 -> nxad-challenge-team04 -> http://localhost:10601 -> team04 flag
 ```
 
-Note: the default base port is 9000. If `CHALLENGE_BASE_PORT` is not set, the script starts at 9000 so it does not conflict with other services.
+Note: the default base port is 10000. If `CHALLENGE_PORT_BASE` is not set, the system starts at 10000 so it does not conflict with other services.
 
 ## Files
 
 ```txt
-challenges/sample-web/              # reusable challenge template
-challenges/generated/docker-compose.yml
-scripts/deploy-challenges.sh        # generates and starts team containers
-scripts/stop-challenges.sh          # stops generated challenge containers
+challenges/sample-web/              # reusable challenge template with template docker-compose.yml
 ```
 
 ## Before Deploying
@@ -42,29 +39,26 @@ docker compose up -d
 http://<nxad-host>:3000/admin/login
 ```
 
-3. Create or initialize teams.
-
-For the simplest setup, use `1` flag per team. If the admin UI generates 5 flags per team, this deploy script will use the first flag for each team.
+3. Create or initialize teams in the admin panel.
 
 ## Deploy Challenges
 
+From the admin panel:
+
+1. Navigate to **Deploy** (`/admin/deploy`)
+2. Click **"Deploy All"**
+
+The system will:
+
+- Auto-scan challenge templates from `challenges/` directories.
+- Read teams from MongoDB.
+- Generate per-challenge docker-compose files in `challenges/data/<challenge>/docker-compose.yml`.
+- Build and run one challenge container per team per challenge.
+
+Default base port is `10000`. To use a different base port:
+
 ```bash
-./scripts/deploy-challenges.sh
-```
-
-The script will:
-
-- Read teams from NXAD MongoDB.
-- Take the first flag owned by each team.
-- Generate `challenges/generated/docker-compose.yml`.
-- Build and run one challenge container per team.
-
-Default ports start at `9000`.
-
-To use a different base port:
-
-```bash
-CHALLENGE_BASE_PORT=8000 CHALLENGE_SSH_BASE_PORT=8022 ./scripts/deploy-challenges.sh
+CHALLENGE_PORT_BASE=8000 docker compose up -d
 ```
 
 ## Stop Challenges
@@ -91,7 +85,7 @@ Attack example:
 
 ```bash
 # From attacker team's container, fetch another team's flag:
-curl "http://<target-ip>:9000/read?file=../../flag.txt"
+curl "http://<target-ip>:10001/read?file=../../flag.txt"
 ```
 
 Teams cannot delete or modify `/flag.txt` even with sudo.
@@ -100,17 +94,17 @@ Submit the captured flag value to NXAD at `/login`.
 
 ## SSH Access For Patching
 
-Each team gets SSH access to their own container. The deploy script prints credentials:
+Each team gets SSH access to their own container. Credentials are visible on the team dashboard:
 
 ```txt
-Team a  http://localhost:9000 | SSH: localhost:9022 user=team pass=d9bab424263b
-Team b  http://localhost:9001 | SSH: localhost:9023 user=team pass=1b024be49ac4
+Team a  http://localhost:10001 | SSH: localhost:10000 user=team pass=d9bab424263b
+Team b  http://localhost:10201 | SSH: localhost:10200 user=team pass=1b024be49ac4
 ```
 
 SSH into your container:
 
 ```bash
-ssh -p 9022 team@<host-ip>
+ssh -p 10000 team@<host-ip>
 ```
 
 Once inside, view the flag:

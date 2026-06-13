@@ -38,7 +38,6 @@ Then create teams from the admin panel. Each team needs:
 - Team name
 - Username
 - Password
-- Flags
 
 If you use the initialize page, NXAD can generate flags for teams automatically.
 

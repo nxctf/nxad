@@ -33,11 +33,11 @@ type ConfigType = {
 
 export default function AdminConfigPage() {
   const [config, setConfig] = useState<ConfigType>({
-    SELF_FLAG_POINTS: 10,
-    ATTACK_POINTS: 200,
-    DEFENSE_PENALTY: 50,
+    SELF_FLAG_POINTS: 25,
+    ATTACK_POINTS: 100,
+    DEFENSE_PENALTY: 25,
     PASSIVE_POINTS_VALUE: 1,
-    PASSIVE_POINTS_INTERVAL: 1200000,
+    PASSIVE_POINTS_INTERVAL: 300000,
     MAX_SUBMISSIONS_PER_MINUTE: 10,
     RATE_LIMIT_WINDOW: 60000,
   })
@@ -382,7 +382,7 @@ export default function AdminConfigPage() {
                         onChange={(e) => handleInputChange("PASSIVE_POINTS_VALUE", e.target.value)}
                         className="bg-gray-700 border-gray-600 text-white"
                       />
-                      <p className="text-xs text-gray-400">Points awarded per flag during passive calculation</p>
+                      <p className="text-xs text-gray-400">Points per team that hasn't submitted your flag (total teams - 1 - submissions)</p>
                     </div>
                   </div>
                 </CardContent>
@@ -413,7 +413,7 @@ export default function AdminConfigPage() {
                         className="bg-gray-700 border-gray-600 text-white"
                       />
                       <p className="text-xs text-gray-400">
-                        Current: {formatInterval(config.PASSIVE_POINTS_INTERVAL)} (1-60 minutes)
+                        Current: {formatInterval(config.PASSIVE_POINTS_INTERVAL)} (1-60 min)
                       </p>
                     </div>
 

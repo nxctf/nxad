@@ -21,10 +21,10 @@ Attack-Defense is a CTF format where every team usually runs the same vulnerable
 
 ## Scoring Model In This Project
 
-- **Attack points**: gained when a team submits another team's flag.
-- **Defense penalty**: deducted from the owner when their flag is captured.
-- **Self flag points**: controlled by config when a team submits its own flag.
-- **Passive points**: periodic points for flags that remain defended.
+- **Attack points** (default: +100): gained when a team submits another team's flag.
+- **Defense penalty** (default: -25): deducted from the owner when their flag is captured.
+- **Self flag points** (default: +25): awarded when a team submits its own flag via the service vulnerability.
+- **Passive points** (default: +1 per 5 min per non-submitting team): calculated as `(total_teams - 1) - teams_that_submitted_your_flag`. The more teams that capture your flag, the fewer passive points you earn.
 
 ## What NXAD Does Not Do Yet
 

@@ -1,19 +1,19 @@
 // Configuration values with defaults
 export const CONFIG = {
-  // Points for submitting your own flag
-  SELF_FLAG_POINTS: Number.parseInt(process.env.SELF_FLAG_POINTS || "10"),
+  // Points for submitting your own flag (via service vulnerability)
+  SELF_FLAG_POINTS: Number.parseInt(process.env.SELF_FLAG_POINTS || "25"),
 
   // Points gained when attacking another team's flag
-  ATTACK_POINTS: Number.parseInt(process.env.ATTACK_POINTS || "200"),
+  ATTACK_POINTS: Number.parseInt(process.env.ATTACK_POINTS || "100"),
 
   // Points deducted from the flag owner when their flag is captured
-  DEFENSE_PENALTY: Number.parseInt(process.env.DEFENSE_PENALTY || "50"),
+  DEFENSE_PENALTY: Number.parseInt(process.env.DEFENSE_PENALTY || "25"),
 
   // Points awarded per flag during passive points calculation
   PASSIVE_POINTS_VALUE: Number.parseInt(process.env.PASSIVE_POINTS_VALUE || "1"),
 
   // Interval between passive points awards (in milliseconds)
-  PASSIVE_POINTS_INTERVAL: Number.parseInt(process.env.PASSIVE_POINTS_INTERVAL || "1200000"), // 20 minutes
+  PASSIVE_POINTS_INTERVAL: Number.parseInt(process.env.PASSIVE_POINTS_INTERVAL || "300000"), // 5 minutes
 
   // Rate limiting
   MAX_SUBMISSIONS_PER_MINUTE: Number.parseInt(process.env.MAX_SUBMISSIONS_PER_MINUTE || "10"),

@@ -212,10 +212,10 @@ The configuration management system allows real-time changes without server rest
 #### Scoring Configuration
 
 **Point Values**:
-- **Self Flag Points** (default: 10): Points for submitting own team's flag
-- **Attack Points** (default: 200): Points for capturing another team's flag
-- **Defense Penalty** (default: 50): Points deducted when your flag is captured
-- **Passive Points Value** (default: 1): Points awarded per flag during passive calculation
+- **Self Flag Points** (default: 25): Points for submitting own team's flag via service vulnerability
+- **Attack Points** (default: 100): Points for capturing another team's flag
+- **Defense Penalty** (default: 25): Points deducted when your flag is captured
+- **Passive Points Value** (default: 1): Points per team that hasn't submitted your flag
 
 **Configuration Interface**:
 - **Real-time Updates**: Changes apply immediately
@@ -255,12 +255,14 @@ The configuration management system allows real-time changes without server rest
 
 ### System Overview
 
-The passive points system automatically awards points to teams based on flag ownership at regular intervals.
+The passive points system automatically awards points to teams based on how well they defend their flags.
 
 #### How It Works
-1. **Interval Trigger**: System runs at configured intervals
-2. **Flag Ownership Check**: Determines which team owns each flag
-3. **Point Calculation**: Awards points based on configuration
+1. **Interval Trigger**: System runs every 5 minutes (configurable)
+2. **Flag Security Check**: For each flag, count how many other teams have submitted it
+3. **Point Calculation**: `points = (total_teams - 1) - teams_that_submitted_your_flag`
+   - If nobody submitted your flag → max points
+   - If all other teams submitted your flag → 0 points
 4. **Score Update**: Updates team scores automatically
 5. **Logging**: Records all passive point awards
 

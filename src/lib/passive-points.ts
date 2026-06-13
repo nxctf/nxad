@@ -62,6 +62,10 @@ export async function awardPassivePoints() {
     // Get current configuration
     const config = getCurrentConfig()
 
+    // Get total teams for point calculation
+    const totalTeams = await Team.countDocuments({})
+    const otherTeamCount = Math.max(0, totalTeams - 1)
+
     // Get all flags
     const flags = await Flag.find({})
 
@@ -70,22 +74,23 @@ export async function awardPassivePoints() {
 
     // Process each flag
     for (const flag of flags) {
-      // Check if any team other than the owner has submitted this flag
-      const otherTeamSubmissions = flag.submissions.filter((submission) => submission.team !== flag.owner)
+      // Count how many OTHER teams have submitted this flag
+      const otherSubmissions = flag.submissions.filter((submission) => submission.team !== flag.owner)
 
-      // If no other team has submitted this flag, award points to the owner
-      if (otherTeamSubmissions.length === 0) {
-        // Find the owner team
+      // Points = (total other teams) - (teams that already submitted)
+      // Max = otherTeamCount (if no one submitted), Min = 0 (if all submitted)
+      const points = Math.max(0, otherTeamCount - otherSubmissions.length)
+
+      if (points > 0) {
         const ownerTeam = await Team.findOne({ name: flag.owner })
 
         if (ownerTeam) {
-          // Award configured passive points
-          ownerTeam.score += config.PASSIVE_POINTS_VALUE
+          ownerTeam.score += points
           await ownerTeam.save()
-          pointsAwarded += config.PASSIVE_POINTS_VALUE
+          pointsAwarded += points
 
           console.log(
-            `Awarded ${config.PASSIVE_POINTS_VALUE} passive point(s) to ${flag.owner} for unsubmitted flag ${flag.value.substring(0, 8)}...`,
+            `Awarded ${points} passive point(s) to ${flag.owner} for flag (${otherSubmissions.length}/${otherTeamCount} other teams submitted)`,
           )
         }
       }
