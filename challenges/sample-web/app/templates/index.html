@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NXAD Sample Web</title>
+    <style>
+      body { background: #0f172a; color: #e2e8f0; font-family: system-ui, sans-serif; margin: 0; }
+      main { max-width: 760px; margin: 0 auto; padding: 48px 24px; }
+      code, pre { background: #1e293b; border-radius: 8px; padding: 2px 6px; }
+      a { color: #38bdf8; }
+      .card { border: 1px solid #334155; border-radius: 16px; padding: 24px; background: #111827; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="card">
+        <h1>NXAD Sample Web</h1>
+        <p>Team owner: <strong>{{ team }}</strong></p>
+        <p>Service: <strong>{{ service }}</strong></p>
+        <p>Read a public note:</p>
+        <pre>GET /read?file=welcome.txt</pre>
+        <p><a href="/read?file=welcome.txt">Open welcome note</a></p>
+      </div>
+    </main>
+  </body>
+</html>

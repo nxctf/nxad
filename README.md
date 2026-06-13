@@ -92,6 +92,13 @@ docker compose down
 pnpm build
 ```
 
+## Documentation
+
+- [Admin Guide](docs/admin-guide.md)
+- [Attack-Defense Overview](docs/attack-defense-overview.md)
+- [Challenge And VM Setup Guide](docs/challenge-setup.md)
+- [Simple Container Challenge](docs/simple-container-challenge.md)
+
 ## Notes
 
 - Admin credentials are sourced from `.env`.
